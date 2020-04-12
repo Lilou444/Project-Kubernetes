@@ -1,0 +1,128 @@
+# cluster admin
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: cluster-admin
+
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: clusterrole-admin
+rules:
+- apiGroups: [""]
+  resources: [""]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: clusterrolebinding
+subjects:
+- kind: ServiceAccount
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: clusterrole-admin
+  apiGroup: rbac.authorization.k8s.io
+
+# sysops
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: sysops
+
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: clusterrole-sysops
+rules:
+- apiGroups: [""]
+  resources: [""]
+  verbs: ["get", "watch", "list"] # on met quoi ici ?
+
+---
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sysops-clusterrolebinding
+subjects:
+- kind: ServiceAccount
+  name: sysops
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: clusterrole-sysops
+  apiGroup: rbac.authorization.k8s.io
+
+# dev
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: dev
+
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: clusterrole-dev
+rules:
+- apiGroups: ["extensions", "apps"]
+  resources: ["pods","deployments","services","persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # on met quoi ici ?
+
+---
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: dev-clusterrolebinding
+subjects:
+- kind: ServiceAccount
+  name: dev
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: clusterrole-dev
+  apiGroup: rbac.authorization.k8s.io
+
+# client
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: client
+  namespace: mysql
+
+---
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: role-client
+  namespace: mysql
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "watch"]
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: mysql
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: role-client
+subjects:
+- kind: ServiceAccount
+  name: client
