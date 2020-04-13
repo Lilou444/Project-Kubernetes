@@ -5,18 +5,16 @@ metadata:
   name: cluster-admin
 
 ---
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: clusterrole-admin
 rules:
-- apiGroups: [""]
-  resources: [""]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: '*'
+  resources: '*'
+  verbs: '*'
 
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -30,6 +28,7 @@ roleRef:
   name: clusterrole-admin
   apiGroup: rbac.authorization.k8s.io
 
+---
 # sysops
 kind: ServiceAccount
 apiVersion: v1
@@ -37,7 +36,6 @@ metadata:
   name: sysops
 
 ---
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -45,10 +43,9 @@ metadata:
 rules:
 - apiGroups: [""]
   resources: [""]
-  verbs: ["get", "watch", "list"] # on met quoi ici ?
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -62,6 +59,7 @@ roleRef:
   name: clusterrole-sysops
   apiGroup: rbac.authorization.k8s.io
 
+---
 # dev
 kind: ServiceAccount
 apiVersion: v1
@@ -69,7 +67,6 @@ metadata:
   name: dev
 
 ---
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -77,10 +74,9 @@ metadata:
 rules:
 - apiGroups: ["extensions", "apps"]
   resources: ["pods","deployments","services","persistentvolumeclaims"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # on met quoi ici ?
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] 
 
 ---
-
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -94,6 +90,7 @@ roleRef:
   name: clusterrole-dev
   apiGroup: rbac.authorization.k8s.io
 
+---
 # client
 kind: ServiceAccount
 apiVersion: v1
@@ -102,7 +99,6 @@ metadata:
   namespace: mysql
 
 ---
-
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -110,7 +106,7 @@ metadata:
   namespace: mysql
 rules:
 - apiGroups: [""]
-  resources: ["pods", "pods/log"]
+  resources: ["pods"]
   verbs: ["get", "list", "watch"]
 
 ---
